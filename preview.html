@@ -1,0 +1,641 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090909">
+<title>Projeto 33 · Dois portais, um universo</title>
+<style>
+:root{color-scheme:dark;--black:#090909;--gold:#dab56f;--light:#f5e7c6;--muted:#b6ad9d}
+*{box-sizing:border-box}
+body{margin:0;color:var(--light);background:var(--black);font-family:Arial,sans-serif;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 2%,#9b702922,transparent 50%),radial-gradient(ellipse at 2% 85%,#a87c1b12,transparent 45%);z-index:-1}
+a,button,input{font:inherit}
+button,a,input::file-selector-button{touch-action:manipulation}
+button,a{-webkit-tap-highlight-color:transparent}
+button{cursor:pointer}
+a{color:inherit}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #ffe3a5;outline-offset:5px}
+button:disabled{opacity:.4;cursor:not-allowed}
+.topbar{width:min(1180px,calc(100% - 48px));margin:auto;min-height:100px;display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid #d9b4681f}
+.brand{display:flex;align-items:center;gap:17px;text-decoration:none}
+.mark{height:39px;width:39px;border:1px solid var(--gold);transform:rotate(45deg);display:grid;place-items:center;box-shadow:0 0 30px #bd90241c}
+.mark span{transform:rotate(-45deg);font:bold 19px Georgia;color:var(--gold)}
+.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:3px;margin-bottom:6px}
+.brand strong{font-size:13px;letter-spacing:4px;font-weight:500}
+.top-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.quiet,.outline{padding:11px 15px;border-radius:7px;border:1px solid #d9b46838;background:transparent;color:var(--light);font-size:12px}
+.quiet{border-color:transparent;color:var(--muted)}
+.outline:hover{background:#d9b46812;border-color:#d9b46890}
+main{width:min(1120px,calc(100% - 48px));margin:auto}
+.hero{text-align:center;padding:68px 0 0}
+.eyebrow{font-size:10px;letter-spacing:4px;color:var(--gold);margin:0 0 22px;display:flex;align-items:center;justify-content:center;gap:14px}
+.eyebrow:before,.eyebrow:after{content:"";height:1px;width:38px;background:linear-gradient(90deg,transparent,var(--gold))}
+.eyebrow:after{transform:rotate(180deg)}
+h1{font:400 clamp(42px,6vw,76px)/1.06 Georgia,serif;letter-spacing:-2px;margin:0}
+h1 em{font-style:normal;color:var(--gold);background:linear-gradient(110deg,#90703c,#fff0c1 50%,#b88d40);background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{color:var(--muted);font-size:14px;line-height:1.8;margin:24px auto 0;max-width:530px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:45px 0 36px;perspective:1400px}
+.portal{--rx:0deg;--ry:0deg;--glow:50%;position:relative;isolation:isolate;min-width:0;min-height:460px;border-radius:19px;overflow:hidden;border:1px solid #d4aa583b;background:linear-gradient(145deg,#191815,#0c0c0b 65%);transform:rotateX(var(--rx)) rotateY(var(--ry));transition:transform .2s ease,border-color .3s,box-shadow .3s;box-shadow:0 24px 55px #0006}
+.portal:hover{border-color:#dfbd777a;box-shadow:0 32px 70px #000a,0 0 35px #d6aa4211}
+.portal:before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at var(--glow) 20%,#deb4591c,transparent 65%)}
+.portal:after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.08;background:repeating-linear-gradient(0deg,transparent,transparent 3px,#f4dba1 4px)}
+.portal-id{position:absolute;left:28px;top:27px;color:var(--gold);font-size:10px;letter-spacing:2px}
+.status{position:absolute;right:26px;top:24px;color:#ccc0aa;font-size:10px;display:flex;align-items:center;gap:7px;border:1px solid #d8b66d2b;padding:7px 10px;border-radius:20px}
+.status:before{content:"";width:4px;height:4px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold)}
+.scene{position:absolute;inset:72px 0 auto;height:180px;perspective:600px;pointer-events:none}
+.glow{position:absolute;width:220px;height:130px;left:calc(50% - 110px);top:50px;border-radius:50%;background:radial-gradient(ellipse,#c8964130,transparent 70%);filter:blur(12px)}
+.halo{position:absolute;width:260px;height:175px;left:calc(50% - 130px);top:22px;border:1px solid #dab56f5c;border-radius:50%;transform:rotateX(64deg) rotateZ(-22deg);box-shadow:0 0 18px #d4b16a18,inset 0 0 18px #d4b16a18}
+.halo.second{width:200px;height:200px;left:calc(50% - 100px);top:0;border-color:#dab56f29;transform:rotateY(68deg) rotateZ(34deg)}
+.core{position:absolute;width:88px;height:88px;left:calc(50% - 44px);top:35px;transform-style:preserve-3d;animation:core-turn 22s linear infinite}
+.face{position:absolute;inset:0;display:grid;place-items:center;border:1px solid #dfc385a6;background:linear-gradient(140deg,#90754855,#14130ff5 70%);color:#e4c582;font:34px Georgia;box-shadow:inset 0 0 25px #dbb36510;backface-visibility:visible}
+.front{transform:translateZ(44px)}
+.back{transform:rotateY(180deg) translateZ(44px)}
+.right{transform:rotateY(90deg) translateZ(44px)}
+.left{transform:rotateY(-90deg) translateZ(44px)}
+.upper{transform:rotateX(90deg) translateZ(44px)}
+.lower{transform:rotateX(-90deg) translateZ(44px)}
+.portal.two .core{animation-delay:-8s;animation-direction:reverse}
+.portal.two .halo{transform:rotateX(65deg) rotateZ(25deg)}
+.portal-content{position:relative;padding:262px 30px 28px}
+.category{font-size:10px;letter-spacing:3px;color:#ac966e;margin:0 0 13px}
+h2{font:400 clamp(29px,3.5vw,39px)/1.12 Georgia,serif;margin:0 0 13px;letter-spacing:-.6px;overflow-wrap:anywhere}
+.portal-content p{font-size:13px;line-height:1.7;color:var(--muted);margin:0;max-width:330px;min-height:44px}
+.enter{display:flex;align-items:center;justify-content:space-between;gap:14px;text-decoration:none;border-top:1px solid #d6b66b2e;margin-top:24px;padding-top:19px;font-size:12px;color:#f0d396;letter-spacing:.5px}
+.enter span{font-size:22px;transition:transform .25s}
+.enter:hover span{transform:translate(4px,-3px)}
+.bottom{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:23px 0 30px;border-top:1px solid #d9b4681c;color:#9f9584;font-size:11px;line-height:1.7}
+.bottom strong{font-weight:400;color:var(--gold);letter-spacing:2px}
+.bottom p{margin:0}
+.total{white-space:nowrap;font-variant-numeric:tabular-nums}
+dialog{width:min(600px,calc(100% - 24px));max-height:90svh;border:1px solid #bc9a594d;border-radius:21px;padding:32px;background:#11110f;color:var(--light);box-shadow:0 40px 100px #000b}
+dialog::backdrop{background:#000b;backdrop-filter:blur(9px)}
+dialog h2{font-size:31px;padding-right:32px}
+.close{position:absolute;top:17px;right:18px;border:0;background:none;color:var(--muted);font-size:26px;width:38px;height:38px}
+.dialog-copy{font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:24px}
+.upload{display:block;border-top:1px solid #d9b46825;padding:20px 0 16px}
+.upload b{display:block;font-weight:500;font-size:13px;margin-bottom:12px}
+.upload input{display:block;max-width:100%;width:100%;color:var(--muted);font-size:13px}
+input::file-selector-button{padding:10px 12px;margin-right:12px;background:#232015;border:1px solid #a88a494f;border-radius:6px;color:#e6ca91;font:inherit;cursor:pointer}
+.file-status{display:block;color:#a99d85;font-size:11px;line-height:1.6;margin-top:10px;overflow-wrap:anywhere}
+.download{width:100%;margin-top:13px;padding:16px;border:1px solid #e6c580;border-radius:8px;color:#211a10;background:linear-gradient(110deg,#b48d49,#f0d49c,#c39952);font-size:13px;font-weight:600;box-shadow:0 8px 25px #d0a85b15}
+#notice{font-size:12px;line-height:1.7;min-height:22px;color:#dbc18d;margin:16px 0 0}
+#notice.error{color:#ffa895}
+.small-note{font-size:11px;line-height:1.7;color:#958b7a;margin:13px 0 0}
+@keyframes core-turn{from{transform:rotateX(-18deg) rotateY(25deg)}to{transform:rotateX(-18deg) rotateY(385deg)}}
+.still .core{animation:none;transform:rotateX(-18deg) rotateY(30deg)}
+.still .portal{transform:none!important}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}.core{transform:rotateX(-18deg) rotateY(30deg)}}
+@media(max-width:700px){
+.topbar,main{width:calc(100% - 32px)}.topbar{min-height:90px}
+.brand strong{font-size:11px;letter-spacing:2px}.brand small{font-size:9px;letter-spacing:2px}
+.quiet{display:none}.outline{font-size:11px;padding:11px}
+.hero{padding-top:46px}.hero p{font-size:13px}
+.eyebrow{letter-spacing:3px;font-size:9px}
+.grid{grid-template-columns:1fr;gap:20px;padding-top:32px}
+.portal{min-height:430px}.portal-content{padding:245px 25px 25px}
+.portal-content h2{font-size:34px}.bottom{flex-wrap:wrap;gap:10px}
+dialog{padding:25px 20px}dialog h2{font-size:28px}.hero h1{letter-spacing:-1.5px}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#" aria-label="Projeto 33 — início">
+    <span class="mark"><span>33</span></span>
+    <span><small>SEU UNIVERSO</small><strong>PROJETO 33</strong></span>
+  </a>
+  <nav class="top-actions" aria-label="Controles do portal">
+    <button class="quiet" id="motion" type="button" aria-pressed="true">3D ativado</button>
+    <button class="outline builder-only" id="prepare" type="button">Integrar projetos ↗</button>
+  </nav>
+</header>
+
+<main>
+  <section class="hero" aria-labelledby="headline">
+    <div class="eyebrow">UM PORTAL. DOIS DESTINOS.</div>
+    <h1 id="headline">Escolha o seu<br><em>próximo universo.</em></h1>
+    <p id="description">Selecione seus dois anexos em “Integrar projetos” e baixe os sites unidos neste portal.</p>
+  </section>
+
+  <section class="grid" aria-label="Escolha um projeto">
+    <article class="portal">
+      <div class="portal-id">PROJETO 33.1</div>
+      <div class="status" id="state0">Selecione o anexo</div>
+      <div class="scene" aria-hidden="true">
+        <div class="glow"></div><div class="halo"></div><div class="halo second"></div>
+        <div class="core">
+          <div class="face front">I</div><div class="face back">I</div>
+          <div class="face right"></div><div class="face left"></div>
+          <div class="face upper"></div><div class="face lower"></div>
+        </div>
+      </div>
+      <div class="portal-content">
+        <div class="category">PRIMEIRO PORTAL</div>
+        <h2 id="name0">Duelo de Caçadores</h2>
+        <p>Seu primeiro projeto. Um novo desafio a cada entrada.</p>
+        <a class="enter" id="open0" href="#preparar">Integrar projeto <span aria-hidden="true">↗</span></a>
+      </div>
+    </article>
+
+    <article class="portal two">
+      <div class="portal-id">PROJETO 33.2</div>
+      <div class="status" id="state1">Selecione o anexo</div>
+      <div class="scene" aria-hidden="true">
+        <div class="glow"></div><div class="halo"></div><div class="halo second"></div>
+        <div class="core">
+          <div class="face front">II</div><div class="face back">II</div>
+          <div class="face right"></div><div class="face left"></div>
+          <div class="face upper"></div><div class="face lower"></div>
+        </div>
+      </div>
+      <div class="portal-content">
+        <div class="category">SEGUNDO PORTAL</div>
+        <h2 id="name1">Projeto 33.2</h2>
+        <p>Seu segundo projeto. Outro destino no mesmo universo.</p>
+        <a class="enter" id="open1" href="#preparar">Integrar projeto <span aria-hidden="true">↗</span></a>
+      </div>
+    </article>
+  </section>
+
+  <footer class="bottom">
+    <p><strong>33 / CENTRAL DE PROJETOS</strong><br>Dois caminhos. A escolha é sua.</p>
+    <span class="total" id="total">0/2 integrados</span>
+  </footer>
+</main>
+
+<dialog class="builder-only" id="setup" aria-labelledby="setup-title">
+  <button class="close" id="close" type="button" aria-label="Fechar">×</button>
+  <h2 id="setup-title">Conecte os dois portais.</h2>
+  <p class="dialog-copy">Selecione os mesmos dois anexos. A página monta o pacote no seu navegador e inclui uma entrada para cada projeto.</p>
+
+  <label class="upload" for="file0">
+    <b>Projeto 33.1 · Arquivo ZIP</b>
+    <input id="file0" type="file" accept=".zip,application/zip">
+    <span class="file-status" id="fileStatus0">Selecione duelo-de-cacadores(1).zip</span>
+  </label>
+
+  <label class="upload" for="file1">
+    <b>Projeto 33.2 · Texto ou HTML</b>
+    <input id="file1" type="file" accept=".txt,.html,.htm,text/plain,text/html">
+    <span class="file-status" id="fileStatus1">Selecione Texto colado(4).txt</span>
+  </label>
+
+  <button class="download" id="export" type="button" disabled>Baixar site unido · ZIP</button>
+  <p id="notice" role="status" aria-live="polite"></p>
+  <p class="small-note">O ZIP inclui o portal, os dois projetos e os anexos originais. Depois de baixar, extraia todos os arquivos.</p>
+</dialog>
+
+<script>
+const ENC=new TextEncoder(),DEC=new TextDecoder();
+
+function crc32(bytes){
+  const table=crc32.table||(crc32.table=Uint32Array.from({length:256},(_,n)=>{
+    for(let bit=0;bit<8;bit++)n=(n>>>1)^((n&1)?0xedb88320:0);
+    return n>>>0;
+  }));
+  let crc=0xffffffff;
+  for(const byte of bytes)crc=(crc>>>8)^table[(crc^byte)&255];
+  return (crc^0xffffffff)>>>0;
+}
+
+function buildZip(files){
+  const chunks=[],central=[];
+  let offset=0,centralSize=0;
+  const date=new Date();
+  const dosDate=((date.getFullYear()-1980)<<9)|((date.getMonth()+1)<<5)|date.getDate();
+  const dosTime=(date.getHours()<<11)|(date.getMinutes()<<5)|(date.getSeconds()>>1);
+
+  for(const [path,bytes] of files){
+    const name=ENC.encode(path),crc=crc32(bytes);
+    const local=new Uint8Array(30+name.length),l=new DataView(local.buffer);
+    l.setUint32(0,0x04034b50,true);
+    l.setUint16(4,20,true);l.setUint16(6,0x800,true);
+    l.setUint16(10,dosTime,true);l.setUint16(12,dosDate,true);
+    l.setUint32(14,crc,true);
+    l.setUint32(18,bytes.length,true);l.setUint32(22,bytes.length,true);
+    l.setUint16(26,name.length,true);local.set(name,30);
+
+    const header=new Uint8Array(46+name.length),h=new DataView(header.buffer);
+    h.setUint32(0,0x02014b50,true);
+    h.setUint16(4,20,true);h.setUint16(6,20,true);
+    h.setUint16(8,0x800,true);
+    h.setUint16(12,dosTime,true);h.setUint16(14,dosDate,true);
+    h.setUint32(16,crc,true);
+    h.setUint32(20,bytes.length,true);h.setUint32(24,bytes.length,true);
+    h.setUint16(28,name.length,true);h.setUint32(42,offset,true);
+    header.set(name,46);
+
+    chunks.push(local,bytes);central.push(header);
+    offset+=local.length+bytes.length;
+    centralSize+=header.length;
+  }
+
+  const end=new Uint8Array(22),e=new DataView(end.buffer);
+  e.setUint32(0,0x06054b50,true);
+  e.setUint16(8,files.size,true);e.setUint16(10,files.size,true);
+  e.setUint32(12,centralSize,true);e.setUint32(16,offset,true);
+  return [...chunks,...central,end];
+}
+
+async function readZip(buffer){
+  const bytes=new Uint8Array(buffer),view=new DataView(buffer),files=new Map();
+  let end=-1,total=0;
+
+  for(let i=bytes.length-22;i>=Math.max(0,bytes.length-65557);i--){
+    if(view.getUint32(i,true)===0x06054b50&&i+22+view.getUint16(i+20,true)===bytes.length){
+      end=i;break;
+    }
+  }
+
+  if(end<0)throw Error("Esse arquivo não é um ZIP válido.");
+  if(view.getUint16(end+4,true)||view.getUint16(end+6,true))
+    throw Error("ZIP dividido em partes não é compatível.");
+
+  const count=view.getUint16(end+10,true);
+  let p=view.getUint32(end+16,true);
+
+  if(count>3000||p===0xffffffff)
+    throw Error("Use um ZIP comum, com até 3.000 arquivos.");
+
+  for(let i=0;i<count;i++){
+    if(p+46>bytes.length||view.getUint32(p,true)!==0x02014b50)
+      throw Error("O ZIP está incompleto.");
+
+    const flags=view.getUint16(p+8,true),method=view.getUint16(p+10,true);
+    const crc=view.getUint32(p+16,true);
+    const compressed=view.getUint32(p+20,true),size=view.getUint32(p+24,true);
+    const names=view.getUint16(p+28,true),extra=view.getUint16(p+30,true);
+    const comment=view.getUint16(p+32,true),local=view.getUint32(p+42,true);
+
+    if(p+46+names+extra+comment>bytes.length)
+      throw Error("O ZIP está incompleto.");
+
+    const name=DEC.decode(bytes.subarray(p+46,p+46+names)).replace(/\\/g,"/");
+    p+=46+names+extra+comment;
+
+    if(name.endsWith("/")||name.startsWith("__MACOSX/"))continue;
+    if(name.startsWith("/")||name.split("/").some(s=>s==="..")||name.includes("\0")||/^[A-Za-z]:/.test(name))
+      throw Error("O ZIP contém um caminho inválido.");
+    if(flags&1)throw Error("Use um ZIP sem senha.");
+
+    total+=size;
+    if(size>60*1024*1024||total>120*1024*1024)
+      throw Error("O conteúdo descompactado deve ter até 120 MB.");
+
+    if(local+30>bytes.length||view.getUint32(local,true)!==0x04034b50)
+      throw Error("O ZIP está incompleto.");
+
+    const start=local+30+view.getUint16(local+26,true)+view.getUint16(local+28,true);
+    if(start+compressed>bytes.length)throw Error("O ZIP está incompleto.");
+
+    let content=bytes.slice(start,start+compressed);
+
+    if(method===8){
+      let stream;
+      try{
+        stream=new Blob([content]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+      }catch{
+        throw Error("Este navegador não descompacta esse ZIP. Abra a página em uma versão atual do Chrome ou Edge.");
+      }
+
+      const reader=stream.getReader(),parts=[];
+      let read=0;
+
+      while(true){
+        const item=await reader.read();
+        if(item.done)break;
+        read+=item.value.length;
+
+        if(read>size||read>60*1024*1024){
+          await reader.cancel();
+          throw Error("Tamanho inesperado no ZIP.");
+        }
+        parts.push(item.value);
+      }
+
+      content=new Uint8Array(read);
+      let at=0;
+      for(const part of parts){content.set(part,at);at+=part.length;}
+    }else if(method!==0){
+      throw Error("Use um ZIP com compactação padrão.");
+    }
+
+    if(content.length!==size||crc32(content)!==crc)
+      throw Error("Um arquivo do ZIP está corrompido: "+name);
+    if(files.has(name))throw Error("O ZIP tem nomes repetidos: "+name);
+
+    files.set(name,content);
+  }
+  return files;
+}
+
+function visuals(){
+  const root=document.documentElement;
+  const toggle=document.getElementById("motion");
+  let motion=!matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function update(){
+    root.classList.toggle("still",!motion);
+    if(toggle){
+      toggle.setAttribute("aria-pressed",String(motion));
+      toggle.textContent=motion?"3D ativado":"3D pausado";
+    }
+  }
+
+  update();
+  if(toggle)toggle.addEventListener("click",()=>{motion=!motion;update();});
+
+  for(const card of document.querySelectorAll(".portal")){
+    card.addEventListener("pointermove",e=>{
+      if(!motion||e.pointerType==="touch")return;
+      const r=card.getBoundingClientRect();
+      card.style.setProperty("--rx",`${-(e.clientY-r.top-r.height/2)/r.height*8}deg`);
+      card.style.setProperty("--ry",`${(e.clientX-r.left-r.width/2)/r.width*9}deg`);
+      card.style.setProperty("--glow",`${(e.clientX-r.left)/r.width*100}%`);
+    });
+    card.addEventListener("pointerleave",()=>{
+      card.style.setProperty("--rx","0deg");
+      card.style.setProperty("--ry","0deg");
+    });
+  }
+}
+
+function startPortal(){
+  visuals();
+
+  const projects=[null,null],versions=[0,0];
+  const dialog=document.getElementById("setup");
+  const exportButton=document.getElementById("export");
+  const notice=document.getElementById("notice");
+  let busy=false;
+
+  function message(text,error=false){
+    notice.textContent=text;
+    notice.classList.toggle("error",error);
+  }
+
+  function refresh(){
+    exportButton.disabled=busy||projects.some(x=>!x);
+    document.getElementById("total").textContent=projects.filter(Boolean).length+"/2 integrados";
+    projects.forEach((project,i)=>{
+      document.getElementById("state"+i).textContent=project?"Integrado":"Selecione o anexo";
+      document.getElementById("open"+i).innerHTML=project
+        ?'Projeto integrado <span aria-hidden="true">✓</span>'
+        :'Integrar projeto <span aria-hidden="true">↗</span>';
+    });
+  }
+
+  function openSetup(i){
+    dialog.showModal();
+    if(i!==undefined)document.getElementById("file"+i).focus();
+  }
+
+  document.getElementById("prepare").addEventListener("click",()=>openSetup());
+  document.getElementById("close").addEventListener("click",()=>dialog.close());
+
+  for(let i=0;i<2;i++){
+    document.getElementById("open"+i).addEventListener("click",e=>{
+      e.preventDefault();openSetup(i);
+    });
+  }
+
+  function titleOf(html){
+    const match=html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+    return match?match[1].replace(/<[^>]*>/g,"").replace(/&amp;/g,"&").trim().slice(0,65):"";
+  }
+
+  function checkHtml(html){
+    if(!/<(?:html|!doctype|head|body|main|div|section|style)\b/i.test(html))
+      throw Error("O texto precisa conter o código HTML do segundo site.");
+    if(/<script[^>]+src\s*=\s*["'][^"']+\.(?:tsx?|jsx)(?:[?"'])/i.test(html))
+      throw Error("Este site precisa ser compilado. Selecione a versão HTML pronta, normalmente na pasta dist.");
+  }
+
+  async function importProject(i,file){
+    const version=++versions[i];
+    projects[i]=null;refresh();message("");
+
+    const status=document.getElementById("fileStatus"+i);
+    status.textContent="Lendo "+file.name+"…";
+
+    try{
+      if(file.size>60*1024*1024)throw Error("Selecione um anexo com até 60 MB.");
+
+      const buffer=await file.arrayBuffer();
+      let project;
+
+      if(i===0){
+        const all=await readZip(buffer);
+        const candidates=[...all.keys()].filter(p=>
+          /\.html?$/i.test(p)&&!/(^|\/)(node_modules|\.git|__MACOSX)\//.test(p)
+        );
+
+        function score(p){
+          return (/\/dist\/client\//.test("/"+p)?300:/\/(dist|build|out)\//.test("/"+p)?200:0)
+            +(/(^|\/)index\.html$/i.test(p)?100:0)-p.split("/").length;
+        }
+
+        candidates.sort((a,b)=>score(b)-score(a));
+        if(!candidates.length)
+          throw Error("Não encontrei uma página HTML no ZIP. É necessário incluir a versão pronta do site.");
+
+        const main=candidates[0],root=main.slice(0,main.lastIndexOf("/")+1);
+        const files=new Map([...all]
+          .filter(([p])=>p.startsWith(root))
+          .map(([p,b])=>[p.slice(root.length),b]));
+
+        const entry=main.slice(root.length),html=DEC.decode(files.get(entry));
+        checkHtml(html);
+
+        project={
+          files,entry,title:titleOf(html),
+          original:new Uint8Array(buffer),
+          originalName:"projeto-33-1.zip"
+        };
+      }else{
+        let html=DEC.decode(new Uint8Array(buffer)).replace(/^\uFEFF/,"").trim();
+        const fence=html.match(/```(?:html)?\s*\n([\s\S]*?)```/i);
+        if(fence)html=fence[1].trim();
+
+        const start=html.search(/<!doctype\s+html|<html\b/i);
+        if(start>=0){
+          html=html.slice(start);
+          const end=html.toLowerCase().lastIndexOf("</html>");
+          if(end>=0)html=html.slice(0,end+7);
+        }
+
+        checkHtml(html);
+
+        if(!/<html\b/i.test(html)){
+          html='<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">'
+            +'<meta name="viewport" content="width=device-width,initial-scale=1">'
+            +'<title>Projeto 33.2</title></head><body>'+html+"</body></html>";
+        }
+
+        project={
+          files:new Map([["index.html",ENC.encode(html)]]),
+          entry:"index.html",
+          title:titleOf(html),
+          original:new Uint8Array(buffer),
+          originalName:"projeto-33-2.txt"
+        };
+      }
+
+      if(version!==versions[i])return;
+      projects[i]=project;
+
+      status.textContent=file.name+" · "+project.files.size+" arquivo(s) integrado(s)";
+      if(project.title)document.getElementById("name"+i).textContent=project.title;
+
+      message(projects.every(Boolean)
+        ?"Os dois projetos estão prontos. Baixe o site unido."
+        :"Projeto integrado. Selecione o outro anexo.");
+    }catch(error){
+      if(version!==versions[i])return;
+      status.textContent=error.message;
+      message(error.message,true);
+    }
+    refresh();
+  }
+
+  for(let i=0;i<2;i++){
+    document.getElementById("file"+i).addEventListener("change",e=>{
+      const file=e.target.files[0];
+      if(file)importProject(i,file);
+    });
+  }
+
+  function relative(from,target){
+    const a=from.split("/");a.pop();
+    const b=target.split("/");
+    while(a.length&&a[0]===b[0]){a.shift();b.shift();}
+    return ("../".repeat(a.length)||"./")+b.join("/");
+  }
+
+  function patchFile(path,bytes,project){
+    if(!/\.(html?|css|m?js)$/i.test(path))return bytes;
+    let text=DEC.decode(bytes);
+
+    const absolute=url=>url.startsWith("/")&&!url.startsWith("//")
+      ?relative(path,url.slice(1)):url;
+
+    if(/\.html?$/i.test(path)){
+      text=text.replace(
+        /\b(src|href|poster|action)\s*=\s*(["'])(\/(?!\/)[^"']*)\2/gi,
+        (_,attr,q,url)=>attr+"="+q+absolute(url)+q
+      );
+
+      const back="../".repeat(path.split("/").length)+"index.html";
+      const nav='<a href="'+back+'" aria-label="Voltar aos projetos" '
+        +'style="position:fixed;bottom:18px;left:18px;z-index:2147483647;'
+        +'padding:12px 17px;border:1px solid #c3a05c;border-radius:999px;'
+        +'background:#10100f;color:#f2d69c;text-decoration:none;'
+        +'font:600 13px system-ui;box-shadow:0 6px 30px #0008">← Projetos 33</a>';
+
+      const closing=text.toLowerCase().lastIndexOf("</body>");
+      text=closing<0?text+nav:text.slice(0,closing)+nav+text.slice(closing);
+    }
+
+    if(/\.css$/i.test(path)||/\.html?$/i.test(path)){
+      text=text.replace(
+        /url\(\s*(["']?)(\/(?!\/)[^"')\s]+)\1\s*\)/gi,
+        (_,q,url)=>"url("+q+absolute(url)+q+")"
+      );
+    }
+
+    if(/\.m?js$/i.test(path)){
+      text=text.replace(
+        /(\b(?:from|import)\s*|\bimport\s*\(\s*|\bnew\s+URL\(\s*)(["'])\/(?!\/)([^"']+)\2/g,
+        (_,lead,q,url)=>lead+q+relative(path,url)+q
+      );
+      text=text.replace(
+        /(["'`])\/(?!\/)([^"'`\n]+)\1/g,
+        (all,q,url)=>project.files.has(url.split(/[?#]/)[0])
+          ?q+relative(project.entry,url)+q:all
+      );
+    }
+    return ENC.encode(text);
+  }
+
+  function exportPortal(){
+    const clone=document.documentElement.cloneNode(true);
+    clone.querySelectorAll("script,.builder-only").forEach(e=>e.remove());
+    clone.classList.remove("still");
+
+    clone.querySelector("#description").textContent=
+      "Escolha um projeto. Entre no seu próximo desafio.";
+
+    projects.forEach((project,i)=>{
+      const link=clone.querySelector("#open"+i);
+      link.setAttribute("href","./projeto-33-"+(i+1)+"/"+project.entry);
+      link.innerHTML='Abrir projeto <span aria-hidden="true">↗</span>';
+      clone.querySelector("#state"+i).textContent="Disponível";
+    });
+
+    clone.querySelectorAll(".portal").forEach(card=>card.removeAttribute("style"));
+    clone.querySelector("#total").textContent="2 projetos";
+
+    const script=document.createElement("script");
+    script.textContent="("+visuals.toString()+")();";
+    clone.querySelector("body").appendChild(script);
+
+    return "<!doctype html>\n"+clone.outerHTML;
+  }
+
+  exportButton.addEventListener("click",async()=>{
+    if(busy||projects.some(x=>!x))return;
+
+    busy=true;refresh();
+    exportButton.textContent="Montando o ZIP…";
+
+    try{
+      await new Promise(resolve=>setTimeout(resolve,30));
+
+      const files=new Map([["index.html",ENC.encode(exportPortal())]]);
+
+      projects.forEach((project,i)=>{
+        for(const [path,bytes] of project.files){
+          files.set(
+            "projeto-33-"+(i+1)+"/"+path,
+            patchFile(path,bytes,project)
+          );
+        }
+        files.set("_originais/"+project.originalName,project.original);
+      });
+
+      files.set("LEIA-ME.txt",ENC.encode(
+        "PROJETO 33 — PORTAL UNIFICADO\n\n"
+        +"Extraia o ZIP inteiro e abra index.html.\n"
+        +"Os dois projetos ficam em pastas próprias, com um botão para voltar ao portal.\n"
+        +"Os anexos originais estão em _originais.\n\n"
+        +"Projetos que usam módulos JavaScript ou recursos de servidor mantêm seus requisitos originais. "
+        +"Para testar com um servidor estático: execute python -m http.server 8000 nesta pasta "
+        +"e abra http://localhost:8000.\n"
+        +"O portal não cria serviços de multiplayer nem substitui o servidor dos projetos.\n"
+      ));
+
+      const blob=new Blob(buildZip(files),{type:"application/zip"});
+      const url=URL.createObjectURL(blob),link=document.createElement("a");
+
+      link.href=url;link.download="projeto-33.zip";
+      document.body.appendChild(link);link.click();link.remove();
+
+      setTimeout(()=>URL.revokeObjectURL(url),30000);
+      message("ZIP gerado. Extraia todos os arquivos para usar o portal.");
+    }catch(error){
+      message(error.message,true);
+    }finally{
+      busy=false;
+      exportButton.textContent="Baixar site unido · ZIP";
+      refresh();
+    }
+  });
+
+  refresh();
+}
+
+startPortal();
+</script>
+</body>
+</html>
